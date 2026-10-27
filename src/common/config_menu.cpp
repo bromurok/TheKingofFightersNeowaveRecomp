@@ -228,28 +228,28 @@ void RenderNativePCSettings() {
         }
     }
 
-    // Atenuar el fondo del juego
-    dl->AddRectFilled(ImVec2(0, 0), ImVec2(vw, vh), IM_COL32(0, 0, 0, 215));
+    // Fondo del juego sutilmente atenuado (translúcido para ver el juego y los cambios detrás)
+    dl->AddRectFilled(ImVec2(0, 0), ImVec2(vw, vh), IM_COL32(0, 0, 0, 40));
 
-    // Panel metálico verde principal estilo Neowave
+    // Panel metálico verde estilo Neowave translúcido
     ImVec2 box_min(ox + 35.0f * s, oy + 25.0f * s);
     ImVec2 box_max(ox + 605.0f * s, oy + 455.0f * s);
 
-    // Fondo verde carbón texturizado
-    dl->AddRectFilled(box_min, box_max, IM_COL32(8, 22, 12, 255), 10.0f * s);
+    // Fondo verde carbón translúcido (permite ver el escenario y los luchadores perfectamente)
+    dl->AddRectFilled(box_min, box_max, IM_COL32(6, 18, 10, 80), 10.0f * s);
     // Borde brillante verde neón
-    dl->AddRect(box_min, box_max, IM_COL32(40, 220, 85, 230), 10.0f * s, 0, 2.0f * s);
+    dl->AddRect(box_min, box_max, IM_COL32(40, 220, 85, 175), 10.0f * s, 0, 1.8f * s);
     dl->AddRect(ImVec2(box_min.x + 4.0f * s, box_min.y + 4.0f * s),
                 ImVec2(box_max.x - 4.0f * s, box_max.y - 4.0f * s),
-                IM_COL32(20, 90, 40, 140), 8.0f * s, 0, 1.0f * s);
+                IM_COL32(20, 90, 40, 75), 8.0f * s, 0, 1.0f * s);
 
     ImFont* font = ImGui::GetFont();
 
-    // Marquesina / Placa superior con título "PC SETTINGS"
+    // Marquesina / Placa superior con título "PC SETTINGS" translúcida
     ImVec2 hdr_min(ox + 160.0f * s, oy + 36.0f * s);
     ImVec2 hdr_max(ox + 480.0f * s, oy + 76.0f * s);
-    dl->AddRectFilled(hdr_min, hdr_max, IM_COL32(16, 44, 22, 255), 6.0f * s);
-    dl->AddRect(hdr_min, hdr_max, IM_COL32(80, 225, 110, 240), 6.0f * s, 0, 1.5f * s);
+    dl->AddRectFilled(hdr_min, hdr_max, IM_COL32(12, 35, 18, 115), 6.0f * s);
+    dl->AddRect(hdr_min, hdr_max, IM_COL32(80, 225, 110, 190), 6.0f * s, 0, 1.5f * s);
 
     const char* kTitle = "PC SETTINGS";
     float title_fsize = 22.0f * s;
@@ -338,11 +338,11 @@ void RenderNativePCSettings() {
             ImVec2 cap_min(ox + 55.0f * s, row_y - 16.0f * s);
             ImVec2 cap_max(ox + 585.0f * s, row_y + 16.0f * s);
 
-            dl->AddRectFilled(cap_min, cap_max, IM_COL32(26, 62, 105, 235), 16.0f * s);
+            dl->AddRectFilled(cap_min, cap_max, IM_COL32(20, 55, 95, 120), 16.0f * s);
             dl->AddLine(ImVec2(cap_min.x + 20.0f * s, cap_min.y + 2.5f * s),
                         ImVec2(cap_max.x - 20.0f * s, cap_min.y + 2.5f * s),
-                        IM_COL32(145, 210, 255, 180), 1.5f * s);
-            dl->AddRect(cap_min, cap_max, IM_COL32(150, 225, 255, 255), 16.0f * s, 0, 2.0f * s);
+                        IM_COL32(145, 210, 255, 140), 1.5f * s);
+            dl->AddRect(cap_min, cap_max, IM_COL32(150, 225, 255, 200), 16.0f * s, 0, 1.8f * s);
 
             // Texto de opción: Blanco puro con sombra
             dl->AddText(font, row_fsize, ImVec2(ox + 75.0f * s + 1.5f * s, row_y - 9.0f * s + 1.5f * s),
@@ -483,11 +483,11 @@ void RenderNativePCSettings() {
                     IM_COL32(255, 255, 255, 255), trial_actions);
     }
 
-    // Barra de instrucciones inferior
+    // Barra de instrucciones inferior translúcida
     ImVec2 b_min(ox + 45.0f * s, oy + 412.0f * s);
     ImVec2 b_max(ox + 595.0f * s, oy + 444.0f * s);
-    dl->AddRectFilled(b_min, b_max, IM_COL32(12, 32, 16, 230), 5.0f * s);
-    dl->AddRect(b_min, b_max, IM_COL32(40, 120, 50, 160), 5.0f * s, 0, 1.0f * s);
+    dl->AddRectFilled(b_min, b_max, IM_COL32(10, 26, 14, 100), 5.0f * s);
+    dl->AddRect(b_min, b_max, IM_COL32(40, 120, 50, 120), 5.0f * s, 0, 1.0f * s);
 
     char help_str[128];
     if (s_show_saved_toast && now - s_save_toast_time < std::chrono::seconds(2)) {
@@ -499,16 +499,16 @@ void RenderNativePCSettings() {
         dl->AddText(font, 14.0f * s, ImVec2(h_x, h_y), IM_COL32(60, 255, 100, 255), help_str);
     } else if (s_trial_active) {
         snprintf(help_str, sizeof(help_str), "%s",
-                 is_es ? "[ENTER / START] CONFIRMAR RESOLUCION    [ESC / BACK / T+Y] CANCELAR"
-                       : "[ENTER / START] CONFIRM RESOLUTION    [ESC / BACK / T+Y] CANCEL");
+                 is_es ? "[ENTER / START] CONFIRMAR RESOLUCION    [ESC / BACK / F1] CANCELAR"
+                       : "[ENTER / START] CONFIRM RESOLUTION    [ESC / BACK / F1] CANCEL");
         ImVec2 h_sz = font->CalcTextSizeA(13.0f * s, FLT_MAX, 0.0f, help_str);
         float h_x = (b_min.x + b_max.x) * 0.5f - h_sz.x * 0.5f;
         float h_y = (b_min.y + b_max.y) * 0.5f - h_sz.y * 0.5f;
         dl->AddText(font, 13.0f * s, ImVec2(h_x, h_y), IM_COL32(255, 210, 60, 255), help_str);
     } else {
         snprintf(help_str, sizeof(help_str), "%s",
-                 is_es ? "[PAD / FLECHAS] NAVEGAR   [< >] ELEGIR   [ENTER / START] APLICAR / LISTA   [T+Y / BACK] SALIR"
-                       : "[DPAD / ARROWS] NAVIGATE   [< >] CHOOSE   [ENTER / START] APPLY / LIST   [T+Y / BACK] EXIT");
+                 is_es ? "[PAD / FLECHAS] NAVEGAR   [< >] ELEGIR   [ENTER / START] APLICAR / LISTA   [F1 / BACK] SALIR"
+                       : "[DPAD / ARROWS] NAVIGATE   [< >] CHOOSE   [ENTER / START] APPLY / LIST   [F1 / BACK] EXIT");
         ImVec2 h_sz = font->CalcTextSizeA(12.0f * s, FLT_MAX, 0.0f, help_str);
         float h_x = (b_min.x + b_max.x) * 0.5f - h_sz.x * 0.5f;
         float h_y = (b_min.y + b_max.y) * 0.5f - h_sz.y * 0.5f;
@@ -550,7 +550,7 @@ void RenderNativePCSettings() {
     bool back_pressed  = !ty_combo && ((pad.buttons & 0x0020) != 0);
 
     bool a_pressed     = (pad.analog[0] > 64) || start_pressed || is_vk(VK_RETURN)  || is_vk(VK_SPACE) || is_vk('J') || is_vk('Z');
-    bool b_pressed     = (pad.analog[1] > 64) || back_pressed  || is_vk(VK_ESCAPE)  || is_vk(VK_BACK)  || is_vk('K') || ty_combo;
+    bool b_pressed     = (pad.analog[1] > 64) || back_pressed  || is_vk(VK_ESCAPE)  || is_vk(VK_BACK)  || is_vk('K') || is_vk(VK_F1) || ty_combo;
 
     if (can_nav) {
         // 1. Si está activo el modo de prueba de 3 segundos

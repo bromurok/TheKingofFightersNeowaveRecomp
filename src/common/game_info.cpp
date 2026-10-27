@@ -22,12 +22,12 @@ std::atomic<bool> s_active = false;
 bool OnMessage(void* hwnd, uint32_t msg, uintptr_t wp, intptr_t lp, intptr_t* result) {
     switch (msg) {
         case WM_KEYDOWN:
-            if (wp == VK_F1 && !(lp & 0x40000000)) {  // F1 abre/cierra el menu (sin repetir)
-                cfgmenu::Toggle();
+            if (wp == VK_F1 && !(lp & 0x40000000)) {  // F1 abre/cierra PC Settings (sin repetir)
+                cfgmenu::ToggleNativePCSettings();
                 for (auto& k : s_keys) k.store(false, std::memory_order_relaxed);
                 return true;
             }
-            if (cfgmenu::Open()) return true;  // con el menu abierto el teclado no pasa al juego
+            if (cfgmenu::Blocked()) return true;  // con el menu abierto el teclado no pasa al juego
             if (wp < 256) {
                 s_keys[wp].store(true, std::memory_order_relaxed);
                 if (!s_active.load(std::memory_order_relaxed)) {
