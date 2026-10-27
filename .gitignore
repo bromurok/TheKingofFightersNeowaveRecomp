@@ -1,0 +1,31 @@
+# build
+/out/
+/build/
+*.zip
+*.pdb
+*.exe
+*.obj
+*.o
+*.cache
+*.bin
+/*.dll
+
+# recompiled code and game PE, derived from the commercial game
+/generated/
+*.pe
+default.pe
+
+# user's own game files and dumps
+/assets/
+
+# runtime files
+settings.toml
+/logs/
+/hdd/
+/CrashDumps/
+
+# editors and temp
+.vs/
+.vscode/
+.idea/
+.local/
