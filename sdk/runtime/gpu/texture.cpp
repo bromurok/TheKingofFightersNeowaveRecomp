@@ -292,6 +292,8 @@ bool Describe(uint32_t header, TextureDesc& d) {
         d.width = (size & 0xFFF) + 1;
         d.height = ((size >> 12) & 0xFFF) + 1;
         d.pitch = ((size >> 24) + 1) * 64;
+        uint32_t min_pitch = (d.width * Format(d.format).bits + 7) / 8;
+        if (d.pitch < min_pitch) d.pitch = min_pitch;
         d.depth = 1;
         d.levels = 1;
         d.linear = true;

@@ -51,28 +51,18 @@ void OnPad(int port, input::Pad& pad) {
         return vk >= 0 && vk < 256 && s_keys[vk].load(std::memory_order_relaxed);
     };
 
-    // Detección de atajo T + Y (o Back+Start / X+Y en mando) para abrir/cerrar ajustes en pausa / gameplay / menú
-    static bool s_ty_was_down = false;
+    // Detección de atajo en mando para abrir/cerrar ajustes en pausa / gameplay / menú (en teclado solo F1)
+    static bool s_pad_menu_was_down = false;
     if (port == 0) {
-        bool ty_down = (is_down('T') && is_down('Y'));
-
-#ifdef _WIN32
-        if ((GetAsyncKeyState('T') & 0x8000) && (GetAsyncKeyState('Y') & 0x8000)) {
-            ty_down = true;
-        }
-#endif
-
         input::Pad p_chk = input::RawPoll(0);
         // Back + Start (0x0010 + 0x0020 = 0x0030) o X + Y (analog[2] y analog[3])
-        if (((p_chk.buttons & 0x0030) == 0x0030) || (p_chk.analog[2] > 64 && p_chk.analog[3] > 64)) {
-            ty_down = true;
-        }
+        bool pad_menu_down = (((p_chk.buttons & 0x0030) == 0x0030) || (p_chk.analog[2] > 64 && p_chk.analog[3] > 64));
 
-        if (ty_down && !s_ty_was_down) {
+        if (pad_menu_down && !s_pad_menu_was_down) {
             cfgmenu::PlayMenuSound(0x5F);
             cfgmenu::ToggleNativePCSettings();
         }
-        s_ty_was_down = ty_down;
+        s_pad_menu_was_down = pad_menu_down;
     }
 
     // Menu abierto o ventana sin foco: ningun input se cuela al juego

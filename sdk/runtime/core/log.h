@@ -15,19 +15,15 @@ void Write(Level lv, const char* fmt, ...) __attribute__((format(printf, 2, 3)))
 void Flush();
 const std::string& Path();
 
-inline constexpr bool kVerbose = true;
+inline constexpr bool kVerbose = false;
 
 }  // namespace logx
 
-#define LOGD(...) ::logx::Write(::logx::Level::Debug, __VA_ARGS__)
-#define LOGI(...) ::logx::Write(::logx::Level::Info, __VA_ARGS__)
-#define LOGW(...) ::logx::Write(::logx::Level::Warn, __VA_ARGS__)
+#define LOGD(...) do {} while (0)
+#define LOGI(...) do {} while (0)
+#define LOGW(...) do {} while (0)
 #define LOGE(...) ::logx::Write(::logx::Level::Error, __VA_ARGS__)
-#define LOGR(...) ::logx::Write(::logx::Level::Report, __VA_ARGS__)
+#define LOGR(...) do {} while (0)
 
 // logs only the first n times a call site is reached
-#define LOG_FIRST(n, ...)                                  \
-    do {                                                   \
-        static std::atomic<int> _c{0};                     \
-        if (_c.fetch_add(1, std::memory_order_relaxed) < (n)) LOGI(__VA_ARGS__); \
-    } while (0)
+#define LOG_FIRST(n, ...) do {} while (0)

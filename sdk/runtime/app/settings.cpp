@@ -59,6 +59,7 @@ void Load() {
     s.controller_player = int(t["controller_player"].value_or(int64_t(s.controller_player)));
     s.crop_black_bars = t["crop_black_bars"].value_or(s.crop_black_bars);
     s.anti_aliasing = t["anti_aliasing"].value_or(s.anti_aliasing);
+    s.show_fps = t["show_fps"].value_or(s.show_fps);
     for (const Option& o : kGame.options) {
         if (o.flag) *o.flag = t[o.key].value_or(*o.flag);
         else *o.value = t[o.key].value_or(*o.value);
@@ -83,7 +84,8 @@ toml::table Table() {
                   {"aspect_ratio", s.aspect_ratio},
                   {"controller_player", int64_t(s.controller_player)},
                   {"crop_black_bars", s.crop_black_bars},
-                  {"anti_aliasing", s.anti_aliasing}};
+                  {"anti_aliasing", s.anti_aliasing},
+                  {"show_fps", s.show_fps}};
     for (const Option& o : kGame.options) {
         if (o.flag) t.insert(o.key, *o.flag);
         else t.insert(o.key, int64_t(*o.value));

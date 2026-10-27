@@ -2902,9 +2902,36 @@ void D3D12Backend::Copy(const Surface& src, const Surface& dst, uint32_t count, 
     if (!src_t || !src_t->drawn) {
         if (!CopySurfaceMemory(src, dst, count, src_rects, dst_points)) {
             LOG_FIRST(8, "d3d12: CopyRects %08X to %08X skipped", src.data, dst.data);
-        } else if (Target* dst_t = FindTarget(dst, false)) {
-            UploadTarget(*dst_t, dst);
+            return;
         }
+        Target* dst_t = FindTarget(dst, false);
+        if (!dst_t) return;
+
+        // Si dst_t ya fue dibujado por la GPU (ej. pantalla de opciones), no sobrescribir toda la memoria
+        // de la pantalla con basura residual de RAM mediante UploadTarget; en su lugar, subir solo la textura
+        // de origen y dibujar/copiar únicamente las regiones afectadas sobre dst_t.
+        TextureDesc src_d;
+        if (dst_t->drawn && DescribeSurface(src, src_d) && !Format(src_d.format).depth) {
+            std::vector<uint8_t> px;
+            uint32_t pitch = 0;
+            DecodeLevel(src_d, 0, 0, static_cast<const uint8_t*>(kernel::HostPtr(src_d.data)), nullptr, px, pitch);
+            ComPtr<ID3D12Resource> src_tex = CreatePixelTexture(px, pitch, src_d.width, src_d.height);
+            if (src_tex) {
+                Target temp_src{};
+                temp_src.w = temp_src.gw = src_d.width;
+                temp_src.h = temp_src.gh = src_d.height;
+                temp_src.fmt = kBgra;
+                CopyList l{.count = count, .src_rects = src_rects, .dst_points = dst_points};
+                D3D12_RESOURCE_STATES src_st = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
+                CopyByDraw(temp_src, src_tex.Get(), src_st, *dst_t, l);
+                CurrentFrame().garbage.push_back(src_tex);
+                dst_t->epoch = DirtyEpoch(dst_t->data);
+                dst_t->sig = MemSig(dst_t->data, dst_t->bytes);
+                return;
+            }
+        }
+
+        UploadTarget(*dst_t, dst);
         return;
     }
     Resolve(*src_t);

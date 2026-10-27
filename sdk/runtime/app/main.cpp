@@ -215,6 +215,10 @@ void ApplyDisplay() {
 void OpenGameWindow(bool apply) { SendMessageW(g_hwnd, kOpenWindow, apply, 0); }
 
 void Pace() {
+    // Si VSync esta activo, Direct3D 12 (swap_->Present(1)) sincroniza con el refresco de hardware.
+    // Un Sleep() adicional causa desajuste de fase y caidas momentaneas de frames (tirones).
+    if (Get().vsync) return;
+
     using clock = std::chrono::steady_clock;
     static clock::time_point next = clock::now();
     uint32_t cap = Get().fps_cap;

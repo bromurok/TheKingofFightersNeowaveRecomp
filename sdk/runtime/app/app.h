@@ -29,6 +29,7 @@ struct Settings {
     int controller_player = 1;             // 1: Mando es Jugador 1, 2: Mando es Jugador 2
     bool crop_black_bars = true;           // elimina bandas negras arriba y abajo (overscan 448p)
     bool anti_aliasing = true;             // Suavizado de bordes (Anti-Aliasing) en la presentacion
+    bool show_fps = false;                 // Contador de FPS en pantalla
 };
 
 Settings& Get();

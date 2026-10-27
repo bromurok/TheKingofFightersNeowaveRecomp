@@ -110,6 +110,7 @@ struct DraftSettings {
     bool anti_aliasing = true;
     bool crop_black_bars = true;
     std::string menu_language = "es";
+    bool show_fps = false;
 };
 static DraftSettings s_draft;
 
@@ -153,6 +154,7 @@ static void SyncDraftFromApp() {
     s_draft.anti_aliasing = st.anti_aliasing;
     s_draft.crop_black_bars = st.crop_black_bars;
     s_draft.menu_language = st.menu_language;
+    s_draft.show_fps = st.show_fps;
 }
 
 static void RevertTrial() {
@@ -262,12 +264,12 @@ void RenderNativePCSettings() {
     auto& st = app::Get();
     bool is_es = (s_draft.menu_language != "en");
 
-    // Etiquetas y valores de las 8 opciones (leídas de s_draft)
+    // Etiquetas y valores de las 9 opciones (leídas de s_draft)
     struct OptionDesc {
         const char* label;
         char val[64];
         bool modified;
-    } opts[8];
+    } opts[9];
 
     // 0: Modo de pantalla
     static const char* kModeES[3] = {"PANTALLA COMPLETA", "SIN BORDES (RECOMENDADO)", "VENTANA"};
@@ -326,17 +328,23 @@ void RenderNativePCSettings() {
     snprintf(opts[7].val, sizeof(opts[7].val), "< %s >", (s_draft.menu_language == "es") ? "ESPANOL" : "ENGLISH");
     opts[7].modified = (s_draft.menu_language != st.menu_language);
 
-    float opt_start_y = oy + 98.0f * s;
-    float opt_step_y  = 38.0f * s;
-    float row_fsize   = 16.0f * s;
+    // 8: Contador de FPS en pantalla
+    opts[8].label = is_es ? "CONTADOR FPS" : "FPS COUNTER";
+    snprintf(opts[8].val, sizeof(opts[8].val), "< %s >", s_draft.show_fps ? (is_es ? "ACTIVADO" : "ENABLED")
+                                                                          : (is_es ? "DESACTIVADO" : "DISABLED"));
+    opts[8].modified = (s_draft.show_fps != st.show_fps);
 
-    for (int i = 0; i < 8; ++i) {
+    float opt_start_y = oy + 92.0f * s;
+    float opt_step_y  = 34.0f * s;
+    float row_fsize   = 15.0f * s;
+
+    for (int i = 0; i < 9; ++i) {
         float row_y = opt_start_y + i * opt_step_y;
 
         if (i == s_pc_sel_option) {
             // Cápsula de selección azul activa
-            ImVec2 cap_min(ox + 55.0f * s, row_y - 16.0f * s);
-            ImVec2 cap_max(ox + 585.0f * s, row_y + 16.0f * s);
+            ImVec2 cap_min(ox + 55.0f * s, row_y - 14.5f * s);
+            ImVec2 cap_max(ox + 585.0f * s, row_y + 14.5f * s);
 
             dl->AddRectFilled(cap_min, cap_max, IM_COL32(20, 55, 95, 120), 16.0f * s);
             dl->AddLine(ImVec2(cap_min.x + 20.0f * s, cap_min.y + 2.5f * s),
@@ -545,12 +553,12 @@ void RenderNativePCSettings() {
     bool left_pressed  = (pad.buttons & 0x0004) || (pad.lx < -12000) || is_vk(VK_LEFT) || is_vk('A');
     bool right_pressed = (pad.buttons & 0x0008) || (pad.lx > 12000)  || is_vk(VK_RIGHT)|| is_vk('D');
 
-    bool ty_combo      = (is_vk('T') && is_vk('Y')) || ((pad.buttons & 0x0030) == 0x0030) || (pad.analog[2] > 64 && pad.analog[3] > 64);
-    bool start_pressed = !ty_combo && ((pad.buttons & 0x0010) != 0);
-    bool back_pressed  = !ty_combo && ((pad.buttons & 0x0020) != 0);
+    bool pad_combo     = ((pad.buttons & 0x0030) == 0x0030) || (pad.analog[2] > 64 && pad.analog[3] > 64);
+    bool start_pressed = !pad_combo && ((pad.buttons & 0x0010) != 0);
+    bool back_pressed  = !pad_combo && ((pad.buttons & 0x0020) != 0);
 
     bool a_pressed     = (pad.analog[0] > 64) || start_pressed || is_vk(VK_RETURN)  || is_vk(VK_SPACE) || is_vk('J') || is_vk('Z');
-    bool b_pressed     = (pad.analog[1] > 64) || back_pressed  || is_vk(VK_ESCAPE)  || is_vk(VK_BACK)  || is_vk('K') || is_vk(VK_F1) || ty_combo;
+    bool b_pressed     = (pad.analog[1] > 64) || back_pressed  || is_vk(VK_ESCAPE)  || is_vk(VK_BACK)  || is_vk('K') || is_vk(VK_F1) || pad_combo;
 
     if (can_nav) {
         // 1. Si está activo el modo de prueba de 3 segundos
@@ -599,11 +607,11 @@ void RenderNativePCSettings() {
 
         // 3. Menú principal de PC Settings
         if (up_pressed) {
-            s_pc_sel_option = (s_pc_sel_option == 0) ? 7 : (s_pc_sel_option - 1);
+            s_pc_sel_option = (s_pc_sel_option == 0) ? 8 : (s_pc_sel_option - 1);
             s_last_nav_time = now;
             PlayMenuSound(0x5E);
         } else if (down_pressed) {
-            s_pc_sel_option = (s_pc_sel_option == 7) ? 0 : (s_pc_sel_option + 1);
+            s_pc_sel_option = (s_pc_sel_option == 8) ? 0 : (s_pc_sel_option + 1);
             s_last_nav_time = now;
             PlayMenuSound(0x5E);
         } else if (left_pressed || right_pressed) {
@@ -671,6 +679,10 @@ void RenderNativePCSettings() {
                     s_draft.menu_language = (s_draft.menu_language == "es") ? "en" : "es";
                     break;
                 }
+                case 8: { // Contador FPS
+                    s_draft.show_fps = !s_draft.show_fps;
+                    break;
+                }
             }
         } else if (a_pressed) {
             // ENTER: Aplica y guarda el ajuste seleccionado
@@ -730,6 +742,11 @@ void RenderNativePCSettings() {
                 app::Save();
                 s_show_saved_toast = true;
                 s_save_toast_time = now;
+            } else if (s_pc_sel_option == 8) { // Contador FPS
+                st.show_fps = s_draft.show_fps;
+                app::Save();
+                s_show_saved_toast = true;
+                s_save_toast_time = now;
             }
         } else if (b_pressed) {
             // T + Y o B / ESC: Cancelar y volver al Graphic Setting original del juego
@@ -743,7 +760,26 @@ void RenderNativePCSettings() {
 }  // namespace
 
 void Draw(double fps) {
-    (void)fps;
+    if (app::Get().show_fps) {
+        ImDrawList* fg = ImGui::GetForegroundDrawList();
+        char fps_str[32];
+        snprintf(fps_str, sizeof(fps_str), "%.1f FPS", fps);
+        ImFont* font = ImGui::GetFont();
+        float fsize = 17.0f;
+        ImVec2 sz = font->CalcTextSizeA(fsize, FLT_MAX, 0.0f, fps_str);
+        float pad_x = 9.0f;
+        float pad_y = 4.0f;
+        float x = ImGui::GetIO().DisplaySize.x - sz.x - pad_x * 2.0f - 14.0f;
+        float y = 14.0f;
+        ImVec2 bg_min(x, y);
+        ImVec2 bg_max(x + sz.x + pad_x * 2.0f, y + sz.y + pad_y * 2.0f);
+        // Insignia translucida estilo Neowave verde neon
+        fg->AddRectFilled(bg_min, bg_max, IM_COL32(8, 24, 14, 190), 5.0f);
+        fg->AddRect(bg_min, bg_max, IM_COL32(50, 225, 95, 210), 5.0f, 0, 1.2f);
+        fg->AddText(font, fsize, ImVec2(x + pad_x + 1.0f, y + pad_y + 1.0f), IM_COL32(0, 0, 0, 230), fps_str);
+        fg->AddText(font, fsize, ImVec2(x + pad_x, y + pad_y), IM_COL32(110, 255, 145, 255), fps_str);
+    }
+
     BuildModes();
     if (!s_desk_ok) RefreshDesk();
 

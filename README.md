@@ -19,12 +19,12 @@ This port was created using the [Xbox XBE Recomp](https://github.com/TGP482/Xbox
 
 ## In-Game PC Settings Menu
 
-Press **`T + Y`** on your keyboard or **`START + BACK`** (or `X + Y`) on your controller at any time (in main menu, Graphic Setting, in-game match, or during **PAUSE**) to open the integrated PC Settings overlay:
+Press **`F1`** on your keyboard or **`START + BACK`** (or `X + Y`) on your controller at any time to open the integrated PC Settings overlay:
 
 * **Navigate:** D-Pad / Thumbstick or Arrow Keys / `W` `S`
 * **Change values:** `< >` or `A` `D`
 * **Apply / Confirm:** **`START`** on controller or **`ENTER`** on keyboard
-* **Return / Close:** **`BACK`** on controller or **`ESC`** / **`T + Y`** on keyboard
+* **Return / Close:** **`BACK`** on controller or **`ESC`** / **`F1`** on keyboard
 
 ### Available Options:
 1. **MODO DE PANTALLA / DISPLAY MODE:** Fullscreen, Borderless Windowed (Recommended), Windowed.
@@ -37,6 +37,31 @@ Press **`T + Y`** on your keyboard or **`START + BACK`** (or `X + Y`) on your co
 6. **ANTI-ALIASING:** Toggle smoothing on 3D stage geometry.
 7. **BORDES NEGROS / BLACK BARS:** Original aspect ratio vs Fill screen.
 8. **IDIOMA / LANGUAGE:** Spanish or English.
+9. **CONTADOR FPS / FPS COUNTER:** Toggle on-screen real-time FPS overlay (`ACTIVADO` / `DESACTIVADO`).
+
+---
+
+## Controles / Controls
+
+### Teclado (Keyboard)
+
+| Acción / Botón Xbox | Tecla Principal | Tecla Alternativa |
+| :--- | :--- | :--- |
+| **Arriba (Up)** | `W` | `Flecha Arriba` |
+| **Abajo (Down)** | `S` | `Flecha Abajo` |
+| **Izquierda (Left)** | `A` | `Flecha Izquierda` |
+| **Derecha (Right)** | `D` | `Flecha Derecha` |
+| **Puño Ligero / LP (X)** | `U` | `C` |
+| **Patada Ligera / LK (A)** | `J` | `Z` |
+| **Puño Fuerte / HP (Y)** | `I` | `V` |
+| **Patada Fuerte / HK (B)** | `K` | `X` |
+| **Heat / Shift Mode (Black / RB)** | `E` | `2` |
+| **White / LB** | `Q` | `1` |
+| **Gatillo Izquierdo (LT)** | `Shift Izquierdo` | — |
+| **Gatillo Derecho (RT)** | `Shift Derecho` | `Control` |
+| **START** | `Enter` | `Espacio` |
+| **BACK** | `Escape` | `Backspace` |
+| **Menú PC Settings** | **`F1`** | — |
 
 ---
 
