@@ -40,6 +40,16 @@ Press **`T + Y`** on your keyboard or **`START + BACK`** (or `X + Y`) on your co
 
 ---
 
+## Supported Game Version & ROM Requirements
+
+To install or compile this port, you must provide your own copy from a legally owned Xbox disc or image.
+
+| Title | Region | Executable | Supported Formats | `default.xbe` SHA-1 | Title ID |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **The King of Fighters Neowave** | **USA / NTSC** | `KOFNeowave.exe` | `.iso`, `.xiso`, or extracted folder | `340bbf3864c5b51ebc25f1da7df0ed5119fceb88` | `534E000A` (SN-010) |
+
+---
+
 ## Installation
 
 1. Download the latest release from the [Releases](https://github.com/bromurok/TheKingofFightersNeowaveRecomp/releases) page.
