@@ -21,7 +21,7 @@ else()
 endif()
 include(${SDK}/cmake/XbeRecomp.cmake)
 
-file(GLOB XBE_HOST_SOURCES CONFIGURE_DEPENDS src/*/*.cpp)
+file(GLOB XBE_HOST_SOURCES CONFIGURE_DEPENDS src/*/*.cpp src/*/*.rc)
 list(FILTER XBE_HOST_SOURCES EXCLUDE REGEX "/src/game/")
 
 # partitions as xbe_symbols wrote them into config/game.toml
