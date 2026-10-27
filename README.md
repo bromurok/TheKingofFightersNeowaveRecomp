@@ -80,6 +80,8 @@ Press **`T + Y`** on your keyboard or **`START + BACK`** (or `X + Y`) on your co
 
 ## Credits & Acknowledgements
 
-* **SNK Playmore** for *The King of Fighters Neowave*.
-* **[TGP482](https://github.com/TGP482)** for the [Xbox XBE Recomp](https://github.com/TGP482/XboxXBE-Recomp) framework.
-* **[Google Gemini](https://deepmind.google/technologies/gemini/)** for assistance in porting, bug fixes, D3D12 fog/texture decoding corrections, and PC settings implementation.
+* [Xbox XBE Recomposición](https://github.com/TGP482/XboxXBE-Recomp) por TGP482 (licencia MIT).
+* [Dear ImGui](https://github.com/ocornut/imgui) de Omar Cornut (licencia MIT).
+* [SDL](https://github.com/libsdl-org/SDL) por Sam Lantinga (licencia zlib).
+* [toml++](https://github.com/marzer/tomlplusplus) de Mark Gillard (Licencia MIT).
+* [Zydis](https://github.com/zyantific/zydis) (licencia MIT).
