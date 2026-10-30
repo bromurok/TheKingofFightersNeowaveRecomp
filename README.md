@@ -19,7 +19,7 @@ This port was created using the [Xbox XBE Recomp](https://github.com/TGP482/Xbox
 
 ## In-Game PC Settings Menu
 
-Press **`F1`** on your keyboard or **`START + BACK`** (or `X + Y`) on your controller at any time to open the integrated PC Settings overlay:
+Press **`F1`** on your keyboard at any time to open the integrated PC Settings overlay:
 
 * **Navigate:** D-Pad / Thumbstick or Arrow Keys / `W` `S`
 * **Change values:** `< >` or `A` `D`
