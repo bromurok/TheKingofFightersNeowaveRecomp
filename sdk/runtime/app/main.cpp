@@ -214,24 +214,44 @@ void ApplyDisplay() {
 }
 void OpenGameWindow(bool apply) { SendMessageW(g_hwnd, kOpenWindow, apply, 0); }
 
-void Pace() {
-    // Si VSync esta activo, Direct3D 12 (swap_->Present(1)) sincroniza con el refresco de hardware.
-    // Un Sleep() adicional causa desajuste de fase y caidas momentaneas de frames (tirones).
-    if (Get().vsync) return;
-
-    using clock = std::chrono::steady_clock;
-    static clock::time_point next = clock::now();
-    uint32_t cap = Get().fps_cap;
-    auto now = clock::now();
-    if (!cap) {
-        next = now;
-        return;
+uint32_t GetMonitorRefreshRate() {
+    HWND hwnd = (HWND)g_hwnd;
+    HMONITOR mon = hwnd ? MonitorFromWindow(hwnd, MONITOR_DEFAULTTOPRIMARY) : nullptr;
+    if (!mon) mon = MonitorFromPoint(POINT{0, 0}, MONITOR_DEFAULTTOPRIMARY);
+    MONITORINFOEXW mi{};
+    mi.cbSize = sizeof(mi);
+    if (GetMonitorInfoW(mon, &mi)) {
+        DEVMODEW dm{};
+        dm.dmSize = sizeof(dm);
+        if (EnumDisplaySettingsW(mi.szDevice, ENUM_CURRENT_SETTINGS, &dm) && dm.dmDisplayFrequency > 0) {
+            return dm.dmDisplayFrequency;
+        }
     }
-    auto period = std::chrono::nanoseconds(1000000000ull / cap);
-    next += period;
-    if (next < now) next = now;
-    while (clock::now() + std::chrono::milliseconds(2) < next) Sleep(1);
-    while (clock::now() < next) std::this_thread::yield();
+    return 60;
+}
+
+void Pace() {
+    using clock = std::chrono::steady_clock;
+    static clock::time_point last_frame = clock::now();
+    uint32_t cap = Get().fps_cap;
+    if (!cap) cap = 60;  // KOF Neowave y juegos de Xbox deben correr a 60 FPS maximo
+
+    auto target_frame_time = std::chrono::nanoseconds(1000000000ull / cap);
+    auto now = clock::now();
+    auto elapsed = now - last_frame;
+
+    // Si la presentacion previa ya tardo 16.6ms o mas (ej. VSync a 60Hz/120Hz/240Hz), no dormimos nada.
+    // Si la presentacion fue mas rapida (ej. VSync desactivado, o monitor 144Hz), dormimos el tiempo restante.
+    if (elapsed < target_frame_time) {
+        auto wait_time = target_frame_time - elapsed;
+        if (wait_time > std::chrono::milliseconds(2)) {
+            auto sleep_target = last_frame + target_frame_time - std::chrono::milliseconds(2);
+            while (clock::now() < sleep_target) Sleep(1);
+        }
+        auto final_target = last_frame + target_frame_time;
+        while (clock::now() < final_target) std::this_thread::yield();
+    }
+    last_frame = clock::now();
 }
 
 }  // namespace app

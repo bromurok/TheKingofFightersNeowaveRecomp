@@ -43,6 +43,7 @@ struct Mode {
 };
 Mode Desktop();
 Mode Output();
+uint32_t GetMonitorRefreshRate();
 float RenderScale(uint32_t guest_height);
 // the output is 3:2 or wider: the console reports a widescreen TV and the frame is shown 16:9, else 4:3 as on a 4:3 TV
 bool Widescreen();

@@ -3181,8 +3181,17 @@ void D3D12Backend::Present(const Surface& front) {
     Submit(false);
     DeliverReports();
     bool vsync = app::Get().vsync;
+    uint32_t sync_interval = 0;
+    if (vsync) {
+        uint32_t hz = app::GetMonitorRefreshRate();
+        if (hz >= 230 && hz <= 250) sync_interval = 4;       // 240Hz: presentar cada 4 VBlanks = 60 FPS exactos
+        else if (hz >= 170 && hz <= 190) sync_interval = 3;  // 180Hz: presentar cada 3 VBlanks = 60 FPS exactos
+        else if (hz >= 110 && hz <= 130) sync_interval = 2;  // 120Hz: presentar cada 2 VBlanks = 60 FPS exactos
+        else if (hz >= 55 && hz <= 75) sync_interval = 1;    // 60Hz: presentar cada 1 VBlank = 60 FPS exactos
+        else sync_interval = 1; // Otros refrescos (144Hz, 165Hz, etc.): Pace() limita a 60 FPS
+    }
     auto perf_swap = PerfClock::now();
-    HRESULT hr = swap_->Present(vsync ? 1 : 0, !vsync && tearing_ ? DXGI_PRESENT_ALLOW_TEARING : 0);
+    HRESULT hr = swap_->Present(sync_interval, (!vsync && tearing_) ? DXGI_PRESENT_ALLOW_TEARING : 0);
     if (FAILED(hr)) {
         HRESULT reason = dev_->GetDeviceRemovedReason();
         LOGE("d3d12: swap_->Present failed hr=0x%08X reason=0x%08X", (uint32_t)hr, (uint32_t)reason);
